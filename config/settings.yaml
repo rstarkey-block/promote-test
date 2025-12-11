@@ -1,0 +1,4 @@
+# Application settings
+app:
+  name: promote-test
+  version: 1.0.0

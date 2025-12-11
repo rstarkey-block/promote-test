@@ -1,0 +1,98 @@
+================================================================================
+SCENARIO B: NORMAL CHERRY-PICK PROMOTION TEST - RESULTS
+================================================================================
+
+Test Date: 2025-12-10 20:41 PST
+Test Branch: promote-pr3
+Remote: https://github.com/rstarkey-block/promote-test/tree/promote-pr3
+
+--------------------------------------------------------------------------------
+OBJECTIVE
+--------------------------------------------------------------------------------
+Verify that the promote-configs validation correctly passes when cherry-picking
+commits that exist on main to stable.
+
+--------------------------------------------------------------------------------
+TEST SETUP
+--------------------------------------------------------------------------------
+
+Starting State:
+  stable: 3dfcc46 (Direct hotfix not on main)
+  main:   01fff5a (Contains PR #1, #2, #3)
+
+Action Taken:
+  1. Created promote-pr3 branch from origin/stable
+  2. Cherry-picked 9e7c096 (PR #3: "Enhance deployment script")
+  3. Result: New commit d6becae with same content as 9e7c096
+
+--------------------------------------------------------------------------------
+VALIDATION RANGE
+--------------------------------------------------------------------------------
+
+Commits being promoted (origin/stable..HEAD):
+  d6becae - Enhance deployment script with health checks
+
+This is the only commit in the validation range, as expected.
+
+--------------------------------------------------------------------------------
+PATCH-ID ANALYSIS
+--------------------------------------------------------------------------------
+
+Cherry-picked commit (d6becae):
+  Patch-ID: 066f38965148a43426d094d33710cd2d7013f352
+  Author: Rob Stakey <rstarkey@block.xyz>
+  Date: Wed Dec 10 16:15:16 2025 -0800
+  Changes: +4 lines to scripts/deploy.sh
+
+Original commit on main (9e7c096):
+  Patch-ID: 066f38965148a43426d094d33710cd2d7013f352
+  Author: Rob Stakey <rstarkey@block.xyz>
+  Date: Wed Dec 10 16:15:16 2025 -0800
+  Changes: +4 lines to scripts/deploy.sh
+
+Result: PATCH-IDs MATCH ✓
+
+--------------------------------------------------------------------------------
+VALIDATION TEST RESULT
+--------------------------------------------------------------------------------
+
+$ ./test-validation.sh
+
+Commits to validate:
+d6becae Enhance deployment script with health checks
+
+Validating commits exist on main...
+Checking commit: d6becae Enhance deployment script with health checks
+  Patch-ID: 066f38965148a43426d094d33710cd2d7013f352
+  ✓ FOUND on main
+
+✓ All commits validated successfully
+
+--------------------------------------------------------------------------------
+TEST RESULT: PASS ✓
+--------------------------------------------------------------------------------
+
+Key Findings:
+  1. Validation correctly identifies cherry-picked commit as existing on main
+  2. Patch-id matching works despite different commit SHAs
+  3. No false negatives for legitimate promotions
+  4. Normal cherry-pick workflow validated successfully
+
+Technical Verification:
+  • Cherry-picked SHA differs from original (expected) ✓
+  • Patch-IDs match exactly ✓
+  • Content is identical ✓
+  • Validation passes ✓
+
+--------------------------------------------------------------------------------
+CONCLUSION
+--------------------------------------------------------------------------------
+
+Scenario B confirms that the promote-configs refactor correctly handles normal
+cherry-pick promotions. The patch-id based validation successfully identifies
+when a commit's changes exist on main, even when the commit SHA differs due to
+cherry-picking.
+
+This validates the core use case: promoting changes from main to stable.
+
+================================================================================
